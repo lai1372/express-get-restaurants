@@ -1,12 +1,17 @@
 const request = require("supertest");
 const app = require("../src/app");
 const db = require("../db/connection");
+const seed = require("../seed");
+
+beforeAll(async () => {
+  await seed();
+});
 
 describe("restaurants", () => {
   test("GET request should return all restaurants", async () => {
     const response = await request(app).get("/restaurants");
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(3);
+    expect(response.body.length).toBe(6);
     expect(response.body[0].cuisine).toBe("FastFood");
   });
 
@@ -27,7 +32,7 @@ describe("restaurants", () => {
     const allRestaurants = await request(app).get("/restaurants");
     expect(response.statusCode).toBe(200);
     expect(response.body.name).toBe("Crust Bros");
-    expect(allRestaurants.body.length).toBe(4);
+    expect(allRestaurants.body.length).toBe(7);
   });
 
   test("PUT should replace a restaurant with sent values", async () => {
