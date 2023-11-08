@@ -25,7 +25,7 @@ app.post("/restaurants", async (req, res) => {
     location: body.location,
     cuisine: body.cuisine,
   });
-  res.json(createRestaurant)
+  res.json(createRestaurant);
 });
 
 app.put("/restaurants/:id", async (req, res) => {
@@ -37,13 +37,14 @@ app.put("/restaurants/:id", async (req, res) => {
     location: body.location,
     cuisine: body.cuisine,
   });
+  res.send("Restaurant added");
 });
 
-app.delete("/restaurants/:id", async(req, res)=>{
-  const id = req.params.id
-  const restaurantFound = await Restaurant.findByPk(id)
-  const removed = await restaurantFound.destroy()
-  res.json(removed)
-})
+app.delete("/restaurants/:id", async (req, res) => {
+  const id = req.params.id;
+  const restaurantFound = await Restaurant.findByPk(id);
+  const removed = await restaurantFound.destroy();
+  res.json(removed);
+});
 
 module.exports = app;
