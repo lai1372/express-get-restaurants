@@ -1,15 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
-const { Restaurant, Menu } = require("../models/index");
+const { Restaurant, Menu, Item } = require("../models/index");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 router.get("/", async (req, res) => {
-  const restaurants = await Restaurant.findAll();
+  const restaurants = await Restaurant.findAll({include:Menu});
   res.json(restaurants);
 });
+
 
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
