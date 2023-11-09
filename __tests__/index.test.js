@@ -12,6 +12,7 @@ describe("restaurants", () => {
     const response = await request(app).get("/restaurants");
     expect(response.statusCode).toBe(200);
     expect(response.body.length).toBe(6);
+    // console.log(JSON.parse(response.body.text))
     expect(response.body[0].cuisine).toBe("FastFood");
   });
 
@@ -32,6 +33,27 @@ describe("restaurants", () => {
     const allRestaurants = await request(app).get("/restaurants");
     expect(response.statusCode).toBe(200);
     expect(response.body.name).toBe("Crust Bros");
+    expect(allRestaurants.body.length).toBe(7);
+  });
+
+  test("POST request should throw error if any value is empty", async () => {
+    const response = await request(app).post("/restaurants").send({
+      name: "",
+      location: "Croydon",
+      cuisine: "Italian",
+    });
+    const allRestaurants = await request(app).get("/restaurants");
+    expect(response.statusCode).toBe(200);
+    expect(response.body.error).toEqual([
+      {
+        location: "body",
+        msg: "Invalid value",
+        path: "name",
+        type: "field",
+        value: "",
+      },
+    ]);
+    // console.log(allRestaurants.body.text)
     expect(allRestaurants.body.length).toBe(7);
   });
 

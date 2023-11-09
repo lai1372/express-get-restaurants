@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { check, validationResult } = require("express-validator");
 const { Restaurant, Menu } = require("../models/index");
 
 router.use(express.json());
@@ -16,15 +17,28 @@ router.get("/:id", async (req, res) => {
   res.json(restaurantById);
 });
 
-router.post("/", async (req, res) => {
-  const body = req.body;
-  const createRestaurant = await Restaurant.create({
-    name: body.name,
-    location: body.location,
-    cuisine: body.cuisine,
-  });
-  res.json(createRestaurant);
-});
+router.post(
+  "/",
+  [
+    check("name").not().isEmpty().trim(),
+    check("location").not().isEmpty().trim(),
+    check("cuisine").not().isEmpty().trim(),
+  ],
+  async (req, res) => {
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+      res.json({ error: error.array() });
+    } else {
+      const body = req.body;
+      const createRestaurant = await Restaurant.create({
+        name: body.name,
+        location: body.location,
+        cuisine: body.cuisine,
+      });
+      res.json(createRestaurant);
+    }
+  }
+);
 
 router.put("/:id", async (req, res) => {
   const id = req.params.id;
